@@ -1,4 +1,4 @@
 1,distributed System,100,1000,How to get a good grade in DOS in 40 minutes a day.
 2,distributed System,100,1000,RPCs for Noobs.
 3,Undergraduate School,10,1800,Xen and Art Suiving Undergraduate School.
-4,Undergraduate School,10,1800,Cooking for the Impatient Undergrad.
+4,Undergraduate School,8,1800,Cooking for the Impatient Undergrad.
