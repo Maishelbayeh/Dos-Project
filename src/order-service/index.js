@@ -1,68 +1,47 @@
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const axios = require('axios');
 
 const app = express();
-const port = 3006;
 
-app.use(express.json());
-app.use(cors());
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
 
-const dataFilePath = path.resolve(
-  __dirname,
-  "C:\\DOS\\project",
-  "BookData.txt"
-);
+// Define your routes
+app.post("/purchase/:id", async (req, res) => {
+  const orderId = req.params.id; // Extract id from URL parameters
+  console.log("Received order ID:", orderId);
 
-function readDataFromFile() {
-  const data = fs.readFileSync(dataFilePath, "utf8");
-  const rows = data.split("\n").map((row) => {
-    const [id, bookTopic, numberOfItems, bookCost, bookTitle] = row.split(",");
-    return { id, bookTopic, numberOfItems, bookCost, bookTitle };
-  });
-  return rows;
-}
+  const orderCost = req.body.orderCost; // Get order cost from request body
+  console.log("Received order cost:", orderCost);
 
-app.post("/purchase/:id", (req, res) => {
-  const id = req.params.id.trim();
-  const data = readDataFromFile();
-  console.log("Data from file:", data);
-  const foundItemIndex = data.findIndex((row) => {
-    console.log("Row ID:", row.id);
-    console.log("Requested ID:", id);
-    return row.id === String(id);
-  });
-  console.log("Searching for ID:", id);
-  if (foundItemIndex !== -1) {
-    const foundItem = data[foundItemIndex];
+  const order = {
+    id: orderId,
+    // orderCost: orderCost
+  };
 
-    if (foundItem.numberOfItems > 0) {
-      foundItem.numberOfItems--;
+  console.log("Order object:", order); // Log the constructed order object
 
-      const updatedData = data.map((row, index) => {
-        if (index === foundItemIndex) {
-          return foundItem;
-        } else {
-          return row;
-        }
-      });
-      const newDataString = updatedData
-        .map((row) => Object.values(row).join(","))
-        .join("\n");
-      fs.writeFileSync(dataFilePath, newDataString);
-
-      res.json({ item: foundItem });
-    } else {
-      console.log("Not enough items in stock for ID:", id);
-      res.status(400).json({ error: "Not enough items in stock" });
-    }
-  } else {
-    console.log("Item not found for ID:", id);
-    res.status(404).json({ error: "Item not found" });
+  try {
+    const response = await axios.post('http://localhost:3005/order', order);
+    console.log("Response from catalog:", response.data); // Log the response from the catalog
+    console.log("Request sent to catalog");
+  } catch (error) {
+    console.error("Error:", error); // Log any errors that occur during the request
+    return res.status(500).send({ error: "Internal Server Error" });
   }
+
+  // Send a response back to the client if needed
+  res.send('Order received successfully!');
 });
 
+// Your other routes
+app.get("/test", (req, res) => {
+  res.send({ Message: "Arrived" });
+});
+
+// Start the server
+const port = 3006;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
