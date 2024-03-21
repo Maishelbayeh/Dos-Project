@@ -7,8 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-catalog": "nodemon -L src/catalog-service/index.js",
     "start-order": "nodemon -L src/order-service/index.js",
-    "start-catalog-replica": "nodemon -L src/catalog-service-replica/index.js",
-    "start-order-replica": "nodemon -L src/order-service-replica/index.js",
     "start-client": "nodemon -L src/client-service/index.mjs"
   },
   "nodemonConfig": {
@@ -16,9 +14,7 @@
     "watch": [
       "src/catalog-service",
       "src/order-service",
-      "src/client-service",
-      "src/catalog-service-replica",
-      "src/order-service-replica"
+      "src/client-service"
     ],
     "ext": "js,json"
   },

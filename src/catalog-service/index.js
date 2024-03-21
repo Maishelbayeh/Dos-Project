@@ -9,7 +9,7 @@ const port = 3005;
 app.use(express.json());
 app.use(cors());
 //C:\Users\maysh\Desktop\Dos\project\BookData.txt
-const dataFilePath = path.resolve('C:\\Users\\maysh\\Desktop\\Dos\\project', 'BookData.txt');
+const dataFilePath = path.resolve('', 'BookData.txt');
 
 console.log(dataFilePath);
 
@@ -59,8 +59,8 @@ app.get('/info/:id', (req, res) => {
 
 
 app.post("/order", (req, res) => {
-  const id = req.body.id.trim(); // Change from req.params.id to req.body.id
- // const orderCost = req.body.orderCost; // New parameter
+  const id = req.body.id.trim();
+  const number = parseInt(req.body.number); // Parse number to integer
   const data = readDataFromFile();
   console.log("Data from file:", data);
   const foundItemIndex = data.findIndex((row) => {
@@ -73,7 +73,7 @@ app.post("/order", (req, res) => {
     const foundItem = data[foundItemIndex];
 
     if (foundItem.numberOfItems > 0) {
-      foundItem.numberOfItems--;
+      foundItem.numberOfItems -= number; // Subtract parsed number
 
       const updatedData = data.map((row, index) => {
         if (index === foundItemIndex) {
@@ -87,7 +87,7 @@ app.post("/order", (req, res) => {
         .join("\n");
       fs.writeFileSync(dataFilePath, newDataString);
 
-      res.json({ item: foundItem }); // Respond with orderCost
+      res.json({ item: foundItem });
     } else {
       console.log("Not enough items in stock for ID:", id);
       res.status(400).json({ error: "Not enough items in stock" });
@@ -97,6 +97,7 @@ app.post("/order", (req, res) => {
     res.status(404).json({ error: "Item not found" });
   }
 });
+
 
 
 app.listen(port, () => {

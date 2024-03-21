@@ -8,22 +8,22 @@ const app = express();
 app.use(bodyParser.json());
 
 // Define your routes
-app.post("/purchase/:id", async (req, res) => {
+app.post("/purchase/:id/:number", async (req, res) => {
   const orderId = req.params.id; // Extract id from URL parameters
   console.log("Received order ID:", orderId);
 
-  const orderCost = req.body.orderCost; // Get order cost from request body
-  console.log("Received order cost:", orderCost);
+  const number = req.params.number; // Extract number from URL parameters
+  console.log("Received order cost:", number);
 
   const order = {
     id: orderId,
-    // orderCost: orderCost
+    number: number
   };
 
   console.log("Order object:", order); // Log the constructed order object
 
   try {
-    const response = await axios.post('http://localhost:3005/order', order);
+    const response = await axios.post(`http://catalog-server:3005/order`, order);
     console.log("Response from catalog:", response.data); // Log the response from the catalog
     console.log("Request sent to catalog");
   } catch (error) {

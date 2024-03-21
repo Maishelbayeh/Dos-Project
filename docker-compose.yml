@@ -8,25 +8,12 @@ services:
     volumes:
       - ./src/catalog-service:/app/src/catalog-service:ro
       - ./src/nginx:/app/src/nginx:ro
-      - ./src/catalog-service/database.db:/app/database.db:rw
     ports:
       - '3005:3005'
     environment:
       - PORT=3005
       - NODE_ENV=production
-  catalog-server-replica:
-    build:
-      context: .
-      target: production2
-    volumes:
-      - ./src/catalog-service-replica:/app/src/catalog-service-replica:ro
-      - ./src/nginx:/app/src/nginx:ro
-      - ./src/catalog-service-replica/database.db:/app/database.db:rw
-    ports:
-      - '3009:3009'
-    environment:
-      - PORT=3009
-      - NODE_ENV=production2
+  
   order-server:
     build:
       context: .
@@ -42,25 +29,7 @@ services:
     depends_on:
       - nginx
 
-  order-server-replica:
-    build:
-      context: .
-      target: production3
-    volumes:
-      - ./src/order-service-replica:/app/src/order-service-replica:ro
-      - ./src/nginx:/app/src/nginx:ro
-    ports:
-      - '3008:3008'
-    environment:
-      - PORT=3008
-      - NODE_ENV=production3
-    depends_on:
-      - nginx
-  client:
-    build:
-      context: .
-    volumes:
-      - ./src/client-service:/app/src/client-service:ro
+ 
   nginx:
     image: nginx:stable-alpine
     ports:
@@ -70,8 +39,7 @@ services:
     depends_on:
       - catalog-server
 
-  redis:
-    image: redis
+ 
 
 
 
